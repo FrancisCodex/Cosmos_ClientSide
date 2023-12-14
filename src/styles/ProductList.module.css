@@ -10,8 +10,13 @@
 .product-container {
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-between;
-}
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .product-container > * {
+    margin: 10px;
+  }
 
 .product-card {
     width: 20%;

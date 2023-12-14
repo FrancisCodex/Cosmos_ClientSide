@@ -3,10 +3,10 @@ import React from 'react';
 import Image from 'next/image';
 import styles from '../../styles/ProductList.module.css';
 
-const ProductCard = ({ name, image, description, price, addToCart }) => {
+const ProductCard = ({ name, image_url, description, price, addToCart }) => {
   return (
     <div className={styles['product-card']}>
-      <Image src={image} alt={name} className={styles['product-card-image']} />
+      <Image src={image_url} width={500} height={500} alt={name} className={styles['product-card-image']} />
       <h3 className={styles['product-card-title']}>{name}</h3>
       <p className={styles['product-card-description']}>{description}</p>
       <span className={styles['product-card-price']}>{price}</span>
@@ -17,4 +17,4 @@ const ProductCard = ({ name, image, description, price, addToCart }) => {
   );
 };
 
-export default ProductCard;
+export default ProductCard; 

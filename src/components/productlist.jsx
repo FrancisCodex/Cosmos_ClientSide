@@ -1,92 +1,24 @@
 // components/ProductList.js
 import Image from "next/image";
-import React from 'react';
+import React, { useState, useEffect } from "react";
 import styles from '@/styles/ProductList.module.css';
 import Navbar from '@/components/Navbar/navbar';
 import Prod1 from '../assets/ecom2.jpg';
-import { useState } from "react";
 import Cart from "@/components/comps/cart";
 import { useRouter } from "next/navigation";
-const products = [
-    {
-        name: 'Macchiato',
-        image: Prod1,
-        description: 'The espresso macchiato is comparable to a mini foamy flat white.',
-        price: '69.00',
-    },
-    {
-        name: 'Matcha',
-        image: Prod1,
-        description: 'Matcha is a high-grade green tea ground into powdered form.',
-        price: '69.00',
-    },
-    {
-        name: 'Latte',
-        image: Prod1,
-        description: 'A latte or caffè latte is a milk coffee that is a made up of one or two shots of espresso, steamed milk and a final, thin layer of frothed milk on top.',
-        price: '89.00',
-    },
-    {
-        name: 'Cappuccino',
-        image: Prod1,
-        description: 'Cappuccino is an Italian coffee drink that is traditionally composed of double espresso and steamed milk foam.',
-        price: '79.00',
-    },
-    {
-        name: 'Americano',
-        image: Prod1,
-        description: 'An Americano is a style of coffee prepared by brewing espresso with added hot water.',
-        price: '65.00',
-    },
-    {
-        name: 'Espresso',
-        image: Prod1,
-        description: 'Espresso is a concentrated coffee brewed by forcing a small amount of nearly boiling water through finely-ground coffee beans.',
-        price: '55.00',
-    },
-    {
-        name: 'Mocha',
-        image: Prod1,
-        description: 'Mocha is a chocolate-flavored variant of a latte, typically with espresso, steamed milk, and chocolate syrup.',
-        price: '75.00',
-    },
-    {
-        name: 'Irish Coffee',
-        image: Prod1,
-        description: 'Irish coffee is a cocktail consisting of hot coffee, Irish whiskey, and sugar, stirred, and topped with cream.',
-        price: '99.00',
-    },
-    {
-        name: 'Flat White',
-        image: Prod1,
-        description: 'A flat white is a coffee drink consisting of espresso with microfoam (steamed milk with small, fine bubbles and a glossy or velvety consistency).',
-        price: '79.00',
-    },
-    // Add more products as needed
-];
+import axios from "axios";
+import Cookies from "js-cookie";
+import Card from "./comps/card";
+import ProductCard from "./comps/productcard";
 
-
-const ProductCard = ({ name, image, description, price, addToCart }) => {
-    return (
-      <div className={styles['product-card']}>
-        <Image src={image} alt={name} className={styles['product-card-image']} />
-        <h3 className={styles['product-card-title']}>{name}</h3>
-        <p className={styles['product-card-description']}>{description}</p>
-        <span className={styles['product-card-price']}>{price}</span>
-        <button className={styles['product-card-button']} onClick={() => addToCart({ name, price })}>
-          Add to Cart
-        </button>
-      </div>
-    );
-  };
-  
   const ProductList = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
     const [cartItems, setCartItems] = useState([]);
+    const [products, setProducts] = useState([]);
     const router = useRouter(); // Initialize the useRouter hook
   
-    const productsPerPage = 4;
+    const productsPerPage = 3;
   
     const filteredProducts = products
       .filter((product) =>
@@ -107,9 +39,30 @@ const ProductCard = ({ name, image, description, price, addToCart }) => {
       setCurrentPage((prevPage) => Math.max(prevPage - 1, 1));
     };
   
-    const addToCart = (item) => {
-      setCartItems((prevCartItems) => [...prevCartItems, item]);
-    };
+    const addToCart = (product) => {
+      // Check if the product is already in the cart
+      const existingProductIndex = cartItems.findIndex(item => item.name === product.name);
+    
+      if (existingProductIndex !== -1) {
+        // If the product is already in the cart, create a new array with the updated product
+        const newCartItems = cartItems.map((item, index) => {
+          if (index !== existingProductIndex) {
+            return item;
+          }
+    
+          return {
+            ...item,
+            qty: item.qty + 1,
+            price: Number(item.price) + Number(product.price)
+          };
+        });
+    
+        setCartItems(newCartItems);
+      } else {
+        // If the product is not in the cart, add it
+        setCartItems(prevCartItems => [...prevCartItems, {...product, qty: 1, price: Number(product.price)}]);
+      }
+    }
   
     const removeFromCart = (index) => {
       setCartItems((prevCartItems) => {
@@ -118,6 +71,21 @@ const ProductCard = ({ name, image, description, price, addToCart }) => {
         return newCartItems;
       });
     };
+
+    useEffect(() => {
+      const fetchProducts = async () => {
+        const authToken = Cookies.get('authToken');
+        const config = {
+          headers: {
+            'Authorization': `Bearer ${authToken}`
+          }
+        };
+        const response = await axios.get('http://localhost:8000/api/p/view', config);
+        setProducts(response.data);
+      };
+  
+      fetchProducts();
+    }, []);
   
     const checkout = () => {
       // Add your checkout logic here
@@ -142,16 +110,18 @@ const ProductCard = ({ name, image, description, price, addToCart }) => {
             }}
           />
   
-          <div className={styles['product-container']}>
-            {currentProducts.map((product, index) => (
-              <ProductCard
-                key={index}
-                {...product}
-                addToCart={addToCart}
-              />
-            ))}
+        <div className={styles['product-container']}>
+        {currentProducts.length > 0 ? (
+          currentProducts.map((product, index) => (
+              <Card product={product} addToCart={addToCart} />
+          ))
+        ) : (
+          <div className="flex items-center justify-center h-full">
+            <p className="text-xl text-gray-500">Coffee not found</p>
           </div>
-  
+        )}
+      </div>
+
           {/* Next and Previous Buttons */}
           <div className={styles['pagination']}>
             <button onClick={handlePrevPage} disabled={currentPage === 1}>

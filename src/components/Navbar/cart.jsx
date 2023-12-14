@@ -1,6 +1,7 @@
 import React, {useState} from 'react'
 
 const Cart = ({ cartItems, removeFromCart, checkout }) => {
+  // { cartItems, removeFromCart, checkout }
     const [isDropdownMenuOpen, setIsDropdownMenuOpen] = useState(false);
   const [isDropdownMenuOpen2, setIsDropdownMenuOpen2] = useState(false);
 
@@ -31,13 +32,13 @@ const Cart = ({ cartItems, removeFromCart, checkout }) => {
                   <div className="flex-auto text-sm w-32">
                     <div className="font-bold">{item.name}</div>
                     <div className="truncate">{item.description}</div>
-                    <div className="text-gray-400">Qt: {item.quantity}</div>
+                    <div className="text-gray-400">Qt: {item.qty}</div>
                   </div>
                   <div className="flex flex-col w-18 font-medium items-end">
                   <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded" onClick={() => removeFromCart(item.id)}>
                     Remove
                   </button>
-                    <div>${item.price}</div>
+                    <div>₱{item.price}</div>
                   </div>
                 </div>
               ))}
