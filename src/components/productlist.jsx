@@ -16,6 +16,11 @@ import ProductCard from "./comps/productcard";
     const [currentPage, setCurrentPage] = useState(1);
     const [cartItems, setCartItems] = useState([]);
     const [products, setProducts] = useState([]);
+    const [formData, setFormData] = useState({
+      name: "",
+      price: 0,
+      qty: 0,
+    });
     const router = useRouter(); // Initialize the useRouter hook
   
     const productsPerPage = 3;
@@ -39,10 +44,16 @@ import ProductCard from "./comps/productcard";
       setCurrentPage((prevPage) => Math.max(prevPage - 1, 1));
     };
   
-    const addToCart = (product) => {
-      // Check if the product is already in the cart
+    const addToCart = async (product) => {
+       // Check if the product is already in the cart
       const existingProductIndex = cartItems.findIndex(item => item.name === product.name);
-    
+      try{
+        await axios.post('http://localhost:8000/api/cart/add', product);
+      }catch(error){
+        //
+      }
+      
+
       if (existingProductIndex !== -1) {
         // If the product is already in the cart, create a new array with the updated product
         const newCartItems = cartItems.map((item, index) => {
@@ -90,7 +101,7 @@ import ProductCard from "./comps/productcard";
     const checkout = () => {
       // Add your checkout logic here
       // For now, let's navigate to the PaymentForm page
-      router.push('/Payment');
+      router.push('/payments');
     };
   
     return (

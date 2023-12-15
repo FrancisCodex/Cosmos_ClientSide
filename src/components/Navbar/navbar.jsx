@@ -23,9 +23,8 @@ const Navbar = ({ cartItems, removeFromCart, checkout }) => {
         </a>
         <ul className="hidden md:flex px-4 mx-auto font-semibold font-heading space-x-12">
           <li><a className="hover:text-gray-200" href="/">Home</a></li>
-          <li><a className="hover:text-gray-200" href="#">Category</a></li>
-          <li><a className="hover:text-gray-200" href="#">Contact us</a></li>
-          <li><a className="hover:text-gray-200" href="/auth/login">Start for free</a></li>
+          <li><a className="hover:text-gray-200" href="/listings">Listing</a></li>
+          <li><a className="hover:text-gray-200" href="/auth/profile">Profile</a></li>
         </ul>
         <div className="hidden xl:flex items-center space-x-5">
           {/* Wishlist */}

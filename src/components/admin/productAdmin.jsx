@@ -2,20 +2,28 @@ import React, {useState, useEffect} from 'react'
 import AdminCard from './adminCard'
 import axios from 'axios'
 import Cookies from 'js-cookie'
+import Navbar from '../Navbar/navbar'
+import { useRouter } from 'next/router'
 
 const ProductAdmin = () => {
     const [products, setProducts] = useState([]);
 
   // Replace this with the actual JWT token
   const token = Cookies.get('authToken');
+  const router = useRouter();
 
   useEffect(() => {
-    axios.get('http://localhost:8000/api/p/view', {
+    axios.get('http://localhost:8000/api/p/view/admin', {
       headers: {
         Authorization: `Bearer ${token}`
       }
     })
-    .then(response => setProducts(response.data));
+    .then(response => setProducts(response.data))
+    .catch(error => {
+      if (error.response && error.response.status === 401) {
+        router.push('/notauthorized');
+      }
+    });
   }, []);
 
   const addProduct = (product) => {
@@ -85,7 +93,7 @@ const ProductAdmin = () => {
                 </div>
                 {/* The Part of the world */}
 
-                <div className="container text-3xl px-5">
+                <div className="container text-3xl px-5 mx-auto">
                 <h1>Products Listed</h1>
 
                 {/* Property List for users */}

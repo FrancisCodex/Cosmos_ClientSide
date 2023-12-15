@@ -1,12 +1,15 @@
 import React from 'react'
 import ProductAdmin from './productAdmin'
-
+import Navbar from '../Navbar/navbar'
+import axios from 'axios'
 const HomePage = () => {
+
   return (
     <div>
-        <h1>Home Page</h1>
-
+      <div className='h-screen'>
         <ProductAdmin />
+      </div>
+        
     </div>
   )
 }

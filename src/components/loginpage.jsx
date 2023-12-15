@@ -36,7 +36,7 @@ const Loginpage = () => {
         console.log('login successfully');
 
         // Redirect to a protected route or dashboard
-        window.location.href = '/auth/profile';
+        window.location.href = '/';
       } else if(response.data.message === "OTP is expired") {
         window.location.href = `/auth/verify?email=${(formData.email)}`;
       }

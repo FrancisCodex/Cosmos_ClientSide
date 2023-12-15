@@ -5,7 +5,7 @@ import { AuthContext } from '@/components/authcontext/AuthProvider';
 const ProtectedRoute = ({ children }) => {
   const Router = useRouter();
   const { isAuthenticated, authenticating } = useContext(AuthContext);
-  const publicRoutes = ['/auth/login', '/auth/register', '/', '/api/user/verify', '/login/requestchangepass', '/auth/resetpassword'];
+  const publicRoutes = ['/auth/login', '/auth/register', '/', '/api/user/verify', '/login/requestchangepass', '/auth/resetpassword', '/auth/verify'];
 
   useEffect(() => {
     if (!authenticating && !isAuthenticated && !publicRoutes.includes(Router.pathname)) {

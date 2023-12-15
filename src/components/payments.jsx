@@ -1,8 +1,49 @@
 // components/Payment.js
-import React from 'react';
+import React, {useState} from 'react';
 import Navbar from '@/components/Navbar/navbar';
-
+import Cookies from 'js-cookie';
+import axios from 'axios';
 const Payment = () => {
+
+    const [address, setAddress] = useState('');
+    const [name, setName] = useState('');
+    const [cardNumber, setCardNumber] = useState('');
+    const [month, setMonth] = useState('');
+    const [year, setYear] = useState('');    
+    const [securityCode, setSecurityCode] = useState('');
+
+    const handleSubmit = async (event) => {
+        event.preventDefault();
+
+        const paymentData = {
+            address,
+            name,
+            cardNumber,
+            month,
+            year,
+            securityCode
+        };
+
+        try {
+            const token = Cookies.get('authToken'); // replace with your token
+
+            axios.post('http://localhost:8000/api/user/payment', paymentData,{
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+            })
+            .then(response => {
+            console.log(response);
+            })
+            .catch(error => {
+            console.error(error);
+            });
+                    } catch (error) {
+                        console.error(error);
+                    }
+                };
+
+
     return (
         <div>
             <div className="pb-5">
@@ -24,20 +65,7 @@ const Payment = () => {
                 <div className="w-full">
                 <div className="-mx-3 md:flex items-start">
                     <div className="px-3 md:w-7/12 lg:pr-10">
-                    <div className="w-full mx-auto text-gray-800 font-light mb-6 border-b border-gray-200 pb-6">
-                        <div className="w-full flex items-center">
-                        <div className="overflow-hidden rounded-lg w-16 h-16 bg-gray-50 border border-gray-200">
-                            <img src="https://images.unsplash.com/photo-1572635196237-14b3f281503f?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1160&q=80" alt="" />
-                        </div>
-                        <div className="flex-grow pl-3">
-                            <h6 className="font-semibold uppercase text-gray-600">Ray Ban Sunglasses.</h6>
-                            <p className="text-gray-400">x 1</p>
-                        </div>
-                        <div>
-                            <span className="font-semibold text-gray-600 text-xl">$210</span><span className="font-semibold text-gray-600 text-sm">.00</span>
-                        </div>
-                        </div>
-                    </div>
+                    
                     <div className="mb-6 pb-6 border-b border-gray-200">
                         <div className="-mx-2 flex items-end justify-end">
                         <div className="flex-grow px-2 lg:max-w-xs">
@@ -57,7 +85,7 @@ const Payment = () => {
                             <span className="text-gray-600">Subtotal</span>
                         </div>
                         <div className="pl-3">
-                            <span className="font-semibold">$190.91</span>
+                            <span className="font-semibold"></span>
                         </div>
                         </div>
                         <div className="w-full flex items-center">
@@ -65,7 +93,7 @@ const Payment = () => {
                             <span className="text-gray-600">Taxes (GST)</span>
                         </div>
                         <div className="pl-3">
-                            <span className="font-semibold">$19.09</span>
+                            <span className="font-semibold"></span>
                         </div>
                         </div>
                     </div>
@@ -75,7 +103,7 @@ const Payment = () => {
                             <span className="text-gray-600">Total</span>
                         </div>
                         <div className="pl-3">
-                            <span className="font-semibold text-gray-400 text-sm">AUD</span> <span className="font-semibold">$210.00</span>
+                            <span className="font-semibold text-gray-400 text-sm">PHP</span> <span className="font-semibold"></span>
                         </div>
                         </div>
                     </div>
@@ -94,26 +122,30 @@ const Payment = () => {
                             <div className="mb-3">
                             <label htmlFor='address' className="text-gray-600 font-semibold text-sm mb-2 ml-1">Address</label>
                             <div>
-                                <input name='address' className="w-full px-3 py-2 mb-1 border border-gray-200 rounded-md focus:outline-none focus:border-indigo-500 transition-colors" placeholder="Address" type="text" />
+                                <input value={address}
+                onChange={e => setAddress(e.target.value)} name='address' className="w-full px-3 py-2 mb-1 border border-gray-200 rounded-md focus:outline-none focus:border-indigo-500 transition-colors" placeholder="Address" type="text" />
                             </div>
                             </div>
                             <div className="mb-3">
                             <label htmlFor='name' className="text-gray-600 font-semibold text-sm mb-2 ml-1">Name on card</label>
                             <div>
-                                <input name='name' className="w-full px-3 py-2 mb-1 border border-gray-200 rounded-md focus:outline-none focus:border-indigo-500 transition-colors" placeholder="John Smith" type="text" />
+                                <input value={name}
+                onChange={e => setName(e.target.value)} name='name' className="w-full px-3 py-2 mb-1 border border-gray-200 rounded-md focus:outline-none focus:border-indigo-500 transition-colors" placeholder="John Smith" type="text" />
                             </div>
                             </div>
                             <div className="mb-3">
                             <label htmlFor='creditcard' className="text-gray-600 font-semibold text-sm mb-2 ml-1">Card number</label>
                             <div>
-                                <input name='creditcard' className="w-full px-3 py-2 mb-1 border border-gray-200 rounded-md focus:outline-none focus:border-indigo-500 transition-colors" placeholder="0000 0000 0000 0000" type="text" />
+                                <input value={cardNumber}
+                onChange={e => setCardNumber(e.target.value)} name='creditcard' className="w-full px-3 py-2 mb-1 border border-gray-200 rounded-md focus:outline-none focus:border-indigo-500 transition-colors" placeholder="0000 0000 0000 0000" type="text" />
                             </div>
                             </div>
                             <div className="mb-3 -mx-2 flex items-end">
                             <div className="px-2 w-1/4">
                                 <label className="text-gray-600 font-semibold text-sm mb-2 ml-1">Expiration date</label>
                                 <div>
-                                <select className="form-select w-full px-3 py-2 mb-1 border border-gray-200 rounded-md focus:outline-none focus:border-indigo-500 transition-colors cursor-pointer">
+                                <select value={month}
+  onChange={e => setMonth(e.target.value)} className="form-select w-full px-3 py-2 mb-1 border border-gray-200 rounded-md focus:outline-none focus:border-indigo-500 transition-colors cursor-pointer">
                                     <option value={1}>01 - January</option>
                                     <option value={2}>02 - February</option>
                                     <option value={3}>03 - March</option>
@@ -130,7 +162,8 @@ const Payment = () => {
                                 </div>
                             </div>
                             <div className="px-2 w-1/4">
-                                <select className="form-select w-full px-3 py-2 mb-1 border border-gray-200 rounded-md focus:outline-none focus:border-indigo-500 transition-colors cursor-pointer">
+                                <select  value={year}
+  onChange={e => setYear(e.target.value)} className="form-select w-full px-3 py-2 mb-1 border border-gray-200 rounded-md focus:outline-none focus:border-indigo-500 transition-colors cursor-pointer">
                                 <option value={2024}>2024</option>
                                 <option value={2025}>2025</option>
                                 <option value={2026}>2026</option>
@@ -146,7 +179,8 @@ const Payment = () => {
                             <div className="px-2 w-1/4">
                                 <label className="text-gray-600 font-semibold text-sm mb-2 ml-1">Security code</label>
                                 <div>
-                                <input className="w-full px-3 py-2 mb-1 border border-gray-200 rounded-md focus:outline-none focus:border-indigo-500 transition-colors" placeholder="Eg 1234" type="text" />
+                                <input value={securityCode}
+                onChange={e => setSecurityCode(e.target.value)} className="w-full px-3 py-2 mb-1 border border-gray-200 rounded-md focus:outline-none focus:border-indigo-500 transition-colors" placeholder="Eg 1234" type="text" />
                                 </div>
                             </div>
                             </div>
@@ -154,7 +188,7 @@ const Payment = () => {
                         </div>
                     </div>
                     <div>
-                        <button className="block w-full max-w-xs mx-auto bg-indigo-500 hover:bg-indigo-700 focus:bg-indigo-700 text-white rounded-lg px-3 py-2 font-semibold"><i className="mdi mdi-lock-outline mr-1" /> PAY NOW</button>
+                        <button className="block w-full max-w-xs mx-auto bg-indigo-500 hover:bg-indigo-700 focus:bg-indigo-700 text-white rounded-lg px-3 py-2 font-semibold" onClick={handleSubmit}><i className="mdi mdi-lock-outline mr-1" /> PAY NOW</button>
                     </div>
                     </div>
                 </div>
