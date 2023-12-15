@@ -45,15 +45,29 @@ import ProductCard from "./comps/productcard";
     };
   
     const addToCart = async (product) => {
-       // Check if the product is already in the cart
+      // Check if the product is already in the cart
       const existingProductIndex = cartItems.findIndex(item => item.name === product.name);
-      try{
-        await axios.post('http://localhost:8000/api/cart/add', product);
-      }catch(error){
-        //
+    
+      // Get the JWT token from wherever you have stored it (e.g., localStorage, cookies)
+      const token = Cookies.get('authToken'); // replace with your token retrieval logic
+    
+      // Determine the quantity to add
+      const qtyToAdd = existingProductIndex !== -1 ? cartItems[existingProductIndex].qty + 1 : 1;
+    
+      try {
+        await axios.post('http://localhost:8000/api/cart/add', 
+          { ...product, qty: qtyToAdd }, 
+          {
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+          }
+        );
+        
+      } catch (error) {
+        // handle error
       }
-      
-
+    
       if (existingProductIndex !== -1) {
         // If the product is already in the cart, create a new array with the updated product
         const newCartItems = cartItems.map((item, index) => {
@@ -73,7 +87,7 @@ import ProductCard from "./comps/productcard";
         // If the product is not in the cart, add it
         setCartItems(prevCartItems => [...prevCartItems, {...product, qty: 1, price: Number(product.price)}]);
       }
-    }
+    };
   
     const removeFromCart = (index) => {
       setCartItems((prevCartItems) => {
@@ -91,8 +105,17 @@ import ProductCard from "./comps/productcard";
             'Authorization': `Bearer ${authToken}`
           }
         };
-        const response = await axios.get('http://localhost:8000/api/p/view', config);
-        setProducts(response.data);
+        try {
+          const response = await axios.get('http://localhost:8000/api/p/view', config);
+          setProducts(response.data);
+        } catch (error) {
+          if (error.response && error.response.status === 403) {
+            console.log('Unauthorized')
+          } else {
+            // Handle other errors
+            console.error(error);
+          }
+        }
       };
   
       fetchProducts();
@@ -106,7 +129,7 @@ import ProductCard from "./comps/productcard";
   
     return (
       <div className={styles['product-list-container']}>
-        <Navbar cartItems={cartItems} removeFromCart={removeFromCart} checkout={checkout}/>
+        <Navbar checkout={checkout}/>
         <div className={styles['product-list']}>
           <h1>Coffee Products</h1>
   

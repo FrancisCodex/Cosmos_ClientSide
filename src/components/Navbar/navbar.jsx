@@ -7,7 +7,7 @@ import Cart from "./cart";
 
 
 
-const Navbar = ({ cartItems, removeFromCart, checkout }) => {
+const Navbar = ({ checkout }) => {
   const [isDropdownMenuOpen, setIsDropdownMenuOpen] = useState(false);
   const [isDropdownMenuOpen2, setIsDropdownMenuOpen2] = useState(false);
 
@@ -35,7 +35,7 @@ const Navbar = ({ cartItems, removeFromCart, checkout }) => {
           </a>
           {/* Cart */}
           <div>
-          <Cart cartItems={cartItems} removeFromCart={removeFromCart} checkout={checkout} />
+          <Cart checkout={checkout} />
           </div>
           {/* Profile */}
           <a className="flex items-center hover:text-red-800" href="/auth/login">

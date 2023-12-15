@@ -20,7 +20,7 @@ const ProductAdmin = () => {
     })
     .then(response => setProducts(response.data))
     .catch(error => {
-      if (error.response && error.response.status === 401) {
+      if (error.response && error.response.status === 401 || error.response.status === 403) {
         router.push('/notauthorized');
       }
     });
